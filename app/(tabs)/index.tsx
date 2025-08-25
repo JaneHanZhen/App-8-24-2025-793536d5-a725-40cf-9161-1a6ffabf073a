@@ -1,7 +1,10 @@
 import { StyleSheet, Text, View, Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function HomeScreen() {
+  const { colors, isDark } = useTheme();
+  
   // Animation value for the fade-in effect
   const fadeAnim = useRef(new Animated.Value(0)).current;
   
@@ -14,11 +17,28 @@ export default function HomeScreen() {
     }).start();
   }, []);
 
+  // Create dynamic styles based on theme
+  const dynamicStyles = {
+    container: {
+      backgroundColor: colors.background,
+    },
+    card: {
+      backgroundColor: colors.card,
+    },
+    title: {
+      color: colors.text,
+    },
+    subtitle: {
+      color: colors.subtitleText,
+    },
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, dynamicStyles.container]}>
       <Animated.View 
         style={[
           styles.card,
+          dynamicStyles.card,
           {
             opacity: fadeAnim,
             transform: [{
@@ -30,8 +50,8 @@ export default function HomeScreen() {
           }
         ]}
       >
-        <Text style={styles.title}>Hello World!</Text>
-        <Text style={styles.subtitle}>Welcome to my React Native app</Text>
+        <Text style={[styles.title, dynamicStyles.title]}>Hello {isDark ? 'Dark' : 'Light'} World!</Text>
+        <Text style={[styles.subtitle, dynamicStyles.subtitle]}>Welcome to my React Native app</Text>
       </Animated.View>
     </View>
   );
@@ -42,11 +62,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
     padding: 20,
   },
   card: {
-    backgroundColor: 'white',
     borderRadius: 15,
     padding: 30,
     width: '90%',
@@ -64,11 +82,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#333',
   },
   subtitle: {
     fontSize: 18,
-    color: '#666',
     textAlign: 'center',
   },
 });
